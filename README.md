@@ -8,6 +8,11 @@ the dub instead of the audio being padded with dead air.
 Built and used in production by [Anchor Media](https://anchormedia.io)
 on every ad we ship.
 
+> **🎬 If you're a video editor:** start at
+> **[xyconst.github.io/anchor-video-translator](https://xyconst.github.io/anchor-video-translator/)** —
+> branded onboarding page with download button, API-key walkthroughs,
+> and a Claude Code prompt that runs the setup for you.
+
 ---
 
 ## How it works (one paragraph)
