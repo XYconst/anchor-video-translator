@@ -1,0 +1,21 @@
+# Railway service config for the video-translator-vb FastAPI backend.
+# Builds the Dockerfile in this dir; pipeline uploads survive restarts via
+# the volume mount described in DEPLOY.md (mount path /data).
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+# startCommand intentionally omitted: the Dockerfile CMD already wraps
+# uvicorn in `sh -c` so ${PORT} expands. Setting startCommand here passes
+# the raw string straight to exec without a shell, leaving `$PORT` literal
+# and crashing uvicorn with `'$PORT' is not a valid integer`.
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+
+# Healthcheck has to wait long enough for torch + the FastAPI import chain
+# to load on a cold start (cpu-only torch is still ~6s). 60s window is
+# tight; bump to 180s so a slow VM doesn't false-fail.
+healthcheckPath = "/api/health"
+healthcheckTimeout = 180
