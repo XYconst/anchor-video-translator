@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Anchor Video Translator — Setup</title>
+<meta name="description" content="One-clip-in, dubbed-and-captioned-in-30-languages-out. Open-source video translator from Anchor Media." />
+<meta property="og:title" content="Anchor Video Translator" />
+<meta property="og:description" content="MP4 in, dubbed + captioned MP4 out for 30+ languages, with the original speaker's voice cloned per market." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          background: '#fcfcfa',
+          foreground: '#000321',
+          card: '#ffffff',
+          muted: '#f5f5f3',
+          'muted-foreground': '#4a5268',
+          border: 'rgba(0, 3, 33, 0.08)',
+          primary: '#0038ff',
+          success: '#37ca37',
+          destructive: '#ef4444',
+          'dark-bg': '#000321',
+          'dark-card': '#15182a',
+          'dark-muted': '#1f2236',
+          'dark-border': 'rgba(255, 255, 255, 0.08)',
+        },
+        fontFamily: {
+          display: ['Satoshi', 'system-ui', 'sans-serif'],
+          sans: ['Satoshi', 'system-ui', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+          serif: ['"Instrument Serif"', 'Georgia', 'serif'],
+        },
+        letterSpacing: {
+          tighter: '-0.035em',
+          tight: '-0.02em',
+          eyebrow: '0.18em',
+        },
+      }
+    }
+  }
+</script>
+<style>
+  html, body { font-family: 'Satoshi', system-ui, sans-serif; letter-spacing: -0.01em; }
+  body { background: #fcfcfa; color: #000321; }
+  .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(0,3,33,0.5); }
+  .eyebrow-dark { color: rgba(255,255,255,0.55); }
+  .italic-muted { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-weight: 400; color: rgba(0,3,33,0.5); }
+  .italic-muted-dark { color: rgba(255,255,255,0.55); }
+  .display-xl { font-family: 'Satoshi', sans-serif; font-weight: 900; line-height: 0.92; letter-spacing: -0.045em; }
+  .display { font-family: 'Satoshi', sans-serif; font-weight: 900; line-height: 0.96; letter-spacing: -0.035em; }
+  .tnum { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
+  .dark-surface { background: #000321; color: #fff; }
+  .glow-cobalt { box-shadow: 0 0 0 1px rgba(0,56,255,0.2), 0 0 32px -4px rgba(0,56,255,0.35); }
+  .accent-bar { position: relative; padding-left: 18px; }
+  .accent-bar::before {
+    content: ''; position: absolute; left: 0; top: 6px; bottom: 6px;
+    width: 2px; border-radius: 2px; background: #0038ff;
+    box-shadow: 0 0 12px rgba(0,56,255,0.6);
+  }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+  .pill-primary { background: #0038ff; color: white; }
+  .pill-secondary { background: rgba(0,56,255,0.08); color: #0038ff; border: 1px solid rgba(0,56,255,0.25); }
+  .pill-success { background: rgba(55,202,55,0.12); color: #2a9b2a; border: 1px solid rgba(55,202,55,0.3); }
+  .step-num { font-family: 'JetBrains Mono', monospace; font-weight: 700; letter-spacing: 0.18em; font-size: 11px; color: rgba(0,56,255,1); }
+  .code { font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+  code, kbd { font-family: 'JetBrains Mono', monospace; }
+  .kbd { display: inline-block; padding: 1px 6px; border: 1px solid rgba(0,3,33,0.12); border-bottom-width: 2px; border-radius: 4px; background: #fff; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; }
+  .copy-btn { transition: all .15s ease; }
+  .copy-btn:hover { color: #0038ff; }
+  .copy-btn.copied { color: #2a9b2a; }
+  details > summary { list-style: none; cursor: pointer; }
+  details > summary::-webkit-details-marker { display: none; }
+  details[open] .summary-arrow { transform: rotate(180deg); }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- ──────────────────────────── HERO ──────────────────────────── -->
+<header class="dark-surface relative overflow-hidden">
+  <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle at 20% -10%, rgba(0,56,255,0.45), transparent 50%);"></div>
+  <div class="absolute inset-0 pointer-events-none" style="background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 100% 28px;"></div>
+
+  <div class="relative max-w-6xl mx-auto px-6 sm:px-10 pt-12 pb-20">
+    <!-- nav -->
+    <nav class="flex items-center justify-between mb-20">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-md bg-primary flex items-center justify-center">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+            <path d="M12 2v20M5 12l7-10 7 10M5 12c0 4.5 3.5 8 7 8s7-3.5 7-8"/>
+          </svg>
+        </div>
+        <span class="text-white font-bold tracking-tight">Anchor Media</span>
+      </div>
+      <a href="https://github.com/XYconst/anchor-video-translator" class="text-white/70 hover:text-white text-sm font-mono tracking-eyebrow uppercase">View on GitHub →</a>
+    </nav>
+
+    <!-- eyebrow + headline -->
+    <p class="eyebrow eyebrow-dark mb-6">Anchor Open Source · Video Translator</p>
+    <h1 class="display-xl text-white text-5xl sm:text-7xl lg:text-8xl mb-8 max-w-4xl">
+      One MP4 in.<br/>
+      <span class="italic-muted italic-muted-dark font-serif italic font-normal">Thirty markets</span> out.
+    </h1>
+    <p class="text-white/75 text-lg sm:text-xl max-w-2xl mb-12 leading-relaxed">
+      The same pipeline Anchor Media ships on every paid ad, now yours. The original
+      speaker's voice cloned for every language. Captions burned in where you placed them.
+      No dead air, no rebuilds.
+    </p>
+
+    <!-- CTAs -->
+    <div class="flex flex-wrap items-center gap-3 mb-16">
+      <a href="https://github.com/XYconst/anchor-video-translator/archive/refs/heads/main.zip"
+         class="inline-flex items-center gap-2 bg-primary text-white px-6 py-3.5 rounded-lg font-bold tracking-tight hover:opacity-90 transition glow-cobalt">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+        </svg>
+        Download repo (ZIP)
+      </a>
+      <button onclick="copyText('git clone https://github.com/XYconst/anchor-video-translator.git', this)"
+              class="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white px-5 py-3.5 rounded-lg font-mono text-sm border border-white/10 copy-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+        <span>git clone …</span>
+      </button>
+      <a href="#setup" class="inline-flex items-center gap-2 text-white/80 hover:text-white px-3 py-3.5 text-sm font-mono tracking-eyebrow uppercase">
+        Read setup ↓
+      </a>
+    </div>
+
+    <!-- stat strip -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-px bg-white/8 rounded-xl overflow-hidden border border-white/10">
+      <div class="bg-dark-bg px-5 py-5">
+        <div class="text-white text-3xl font-bold tnum">32</div>
+        <p class="eyebrow eyebrow-dark mt-1">Languages</p>
+      </div>
+      <div class="bg-dark-bg px-5 py-5">
+        <div class="text-white text-3xl font-bold tnum">~6 min</div>
+        <p class="eyebrow eyebrow-dark mt-1">Per cut</p>
+      </div>
+      <div class="bg-dark-bg px-5 py-5">
+        <div class="text-white text-3xl font-bold tnum">2</div>
+        <p class="eyebrow eyebrow-dark mt-1">API keys</p>
+      </div>
+      <div class="bg-dark-bg px-5 py-5">
+        <div class="text-white text-3xl font-bold tnum">0</div>
+        <p class="eyebrow eyebrow-dark mt-1">Editing hours</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ──────────────────────────── HOW IT WORKS ──────────────────────────── -->
+<section class="max-w-6xl mx-auto px-6 sm:px-10 py-20">
+  <p class="eyebrow mb-3">01 · How it works</p>
+  <h2 class="display text-3xl sm:text-5xl mb-12 max-w-3xl">
+    Drop a clip, pick markets, walk away.
+  </h2>
+
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="bg-card border border-border rounded-xl p-6">
+      <p class="eyebrow text-primary mb-3">Step · 01</p>
+      <h3 class="font-bold text-lg mb-2">Upload the source</h3>
+      <p class="text-sm text-muted-foreground leading-relaxed">Drag an MP4 onto the studio. Any aspect ratio, any duration up to ~5 minutes works comfortably.</p>
+    </div>
+    <div class="bg-card border border-border rounded-xl p-6">
+      <p class="eyebrow text-primary mb-3">Step · 02</p>
+      <h3 class="font-bold text-lg mb-2">Pick the markets</h3>
+      <p class="text-sm text-muted-foreground leading-relaxed">32 languages preloaded. EU-7 preset in one click, or hand-pick. Optional script .docx if you've already got translations.</p>
+    </div>
+    <div class="bg-card border border-border rounded-xl p-6">
+      <p class="eyebrow text-primary mb-3">Step · 03</p>
+      <h3 class="font-bold text-lg mb-2">Place the caption</h3>
+      <p class="text-sm text-muted-foreground leading-relaxed">Drag, resize, rotate. The preview is WYSIWYG. Pick font, colour, outline, shadow, glow. The studio shows you the burn-in size live.</p>
+    </div>
+    <div class="bg-card border border-border rounded-xl p-6">
+      <p class="eyebrow text-primary mb-3">Step · 04</p>
+      <h3 class="font-bold text-lg mb-2">Hit Translate</h3>
+      <p class="text-sm text-muted-foreground leading-relaxed">Three jobs run in parallel by default. ElevenLabs clones the speaker. Gemini transcribes and translates. ffmpeg fits audio to cut without dead air.</p>
+    </div>
+    <div class="bg-card border border-border rounded-xl p-6">
+      <p class="eyebrow text-primary mb-3">Step · 05</p>
+      <h3 class="font-bold text-lg mb-2">Download the cuts</h3>
+      <p class="text-sm text-muted-foreground leading-relaxed">Each language drops into a delivery grid with a preview + download link. Final files live under <code class="text-foreground bg-muted px-1 rounded">uploads/{job}/{lang}/final.mp4</code>.</p>
+    </div>
+    <div class="bg-card border border-primary/30 rounded-xl p-6 bg-primary/[0.02]">
+      <p class="eyebrow text-primary mb-3">Built for ads</p>
+      <h3 class="font-bold text-lg mb-2 text-primary">Cut-respecting tempo</h3>
+      <p class="text-sm text-muted-foreground leading-relaxed">When the dub is longer, audio speeds up to +20% before the video deforms. When it's shorter, the video clip compresses. Never silence-padded.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────────────── WHAT YOU NEED ──────────────────────────── -->
+<section class="bg-muted/40 border-y border-border">
+  <div class="max-w-6xl mx-auto px-6 sm:px-10 py-20">
+    <p class="eyebrow mb-3">02 · What you need before you start</p>
+    <h2 class="display text-3xl sm:text-5xl mb-12 max-w-3xl">
+      Two keys.<br/>
+      <span class="italic-muted font-serif italic font-normal">Fifteen minutes.</span>
+    </h2>
+
+    <div class="grid lg:grid-cols-2 gap-5">
+      <!-- ElevenLabs card -->
+      <div class="bg-card border border-border rounded-2xl p-8">
+        <div class="flex items-start justify-between mb-6">
+          <div>
+            <p class="eyebrow mb-2">Key 1 · Required</p>
+            <h3 class="display text-2xl mb-1">ElevenLabs</h3>
+            <p class="text-sm text-muted-foreground">Voice cloning, TTS, vocal isolation.</p>
+          </div>
+          <span class="pill pill-secondary">Paid recommended</span>
+        </div>
+
+        <ol class="space-y-4 mb-6">
+          <li class="flex gap-3">
+            <span class="step-num pt-0.5">01</span>
+            <div class="text-sm">
+              Open <a href="https://elevenlabs.io/sign-up" target="_blank" class="text-primary underline underline-offset-2">elevenlabs.io/sign-up</a> and create an account.
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <span class="step-num pt-0.5">02</span>
+            <div class="text-sm">
+              Subscribe to at least the <strong>Creator</strong> plan ($22/mo). Free tier doesn't include voice cloning.
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <span class="step-num pt-0.5">03</span>
+            <div class="text-sm">
+              Go to <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank" class="text-primary underline underline-offset-2">Settings → API Keys</a>, click <strong>Create API key</strong>, give it any name (e.g. <code class="bg-muted px-1 rounded">video-translator</code>).
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <span class="step-num pt-0.5">04</span>
+            <div class="text-sm">
+              Copy the value starting with <code class="bg-muted px-1 rounded">sk_…</code>. Save it somewhere safe.
+            </div>
+          </li>
+        </ol>
+
+        <div class="rounded-lg bg-muted/60 border border-border p-3 text-xs text-muted-foreground">
+          <p class="font-bold text-foreground mb-1">Budget estimate</p>
+          One clip × 5 languages eats ~5-15 minutes of dubbing credits and consumes a clone-voice slot per speaker. Creator's 100k characters covers ~10 typical ads.
+        </div>
+      </div>
+
+      <!-- KIE card -->
+      <div class="bg-card border border-border rounded-2xl p-8">
+        <div class="flex items-start justify-between mb-6">
+          <div>
+            <p class="eyebrow mb-2">Key 2 · Required</p>
+            <h3 class="display text-2xl mb-1">KIE.ai</h3>
+            <p class="text-sm text-muted-foreground">Cheap Gemini-3-Flash proxy. Transcription + translation + word timestamps.</p>
+          </div>
+          <span class="pill pill-secondary">Pay-as-you-go</span>
+        </div>
+
+        <ol class="space-y-4 mb-6">
+          <li class="flex gap-3">
+            <span class="step-num pt-0.5">01</span>
+            <div class="text-sm">
+              Open <a href="https://kie.ai" target="_blank" class="text-primary underline underline-offset-2">kie.ai</a> and sign up with email or Google.
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <span class="step-num pt-0.5">02</span>
+            <div class="text-sm">
+              Top up at least <strong>$5</strong> from the billing page. Gemini-3-Flash calls are sub-cent each; $5 lasts hundreds of clips.
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <span class="step-num pt-0.5">03</span>
+            <div class="text-sm">
+              Open the dashboard, hit <strong>API Keys</strong> in the sidebar, click <strong>Create</strong>.
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <span class="step-num pt-0.5">04</span>
+            <div class="text-sm">
+              Copy the resulting key. Save it alongside the ElevenLabs one.
+            </div>
+          </li>
+        </ol>
+
+        <div class="rounded-lg bg-muted/60 border border-border p-3 text-xs text-muted-foreground">
+          <p class="font-bold text-foreground mb-1">Why KIE and not Google direct?</p>
+          KIE proxies Gemini at ~50% of Google's list price. No GCP project needed; sign up with an email and you're done.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────────────── INSTALL ──────────────────────────── -->
+<section id="setup" class="max-w-6xl mx-auto px-6 sm:px-10 py-20">
+  <p class="eyebrow mb-3">03 · Get it running locally</p>
+  <h2 class="display text-3xl sm:text-5xl mb-3 max-w-3xl">
+    Pick a path.<br/>
+    <span class="italic-muted font-serif italic font-normal">Both lead to the same studio.</span>
+  </h2>
+  <p class="text-muted-foreground mb-12 max-w-2xl">Path A: classic command line. Path B: hand it to Claude Code and let the AI do the typing.</p>
+
+  <!-- prereqs -->
+  <div class="bg-dark-bg text-white rounded-2xl p-8 mb-8">
+    <p class="eyebrow eyebrow-dark mb-4">System tools</p>
+    <div class="grid sm:grid-cols-3 gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="phase-dot bg-success"></span>
+          <p class="font-mono text-sm font-bold">Python 3.12+</p>
+        </div>
+        <p class="text-xs text-white/55">macOS: <code class="text-white">brew install python@3.12</code></p>
+      </div>
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="phase-dot bg-success"></span>
+          <p class="font-mono text-sm font-bold">ffmpeg</p>
+        </div>
+        <p class="text-xs text-white/55">macOS: <code class="text-white">brew install ffmpeg</code></p>
+      </div>
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="phase-dot bg-success"></span>
+          <p class="font-mono text-sm font-bold">Node 18+</p>
+        </div>
+        <p class="text-xs text-white/55">macOS: <code class="text-white">brew install node</code></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Path A -->
+  <div class="bg-card border border-border rounded-2xl p-8 mb-5">
+    <div class="flex items-start justify-between mb-6">
+      <div class="accent-bar">
+        <p class="eyebrow mb-2">Path A · Manual</p>
+        <h3 class="display text-2xl">Run it from the terminal</h3>
+      </div>
+      <span class="pill pill-secondary">~10 min first time</span>
+    </div>
+
+    <ol class="space-y-5">
+      <li>
+        <p class="step-num mb-2">Step 01 · Clone the repo</p>
+        <div class="bg-dark-bg text-white rounded-lg p-4 flex items-center justify-between">
+          <code class="code">git clone https://github.com/XYconst/anchor-video-translator.git && cd anchor-video-translator</code>
+          <button onclick="copyText('git clone https://github.com/XYconst/anchor-video-translator.git && cd anchor-video-translator', this)" class="copy-btn text-white/60 ml-3" title="Copy">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+      </li>
+
+      <li>
+        <p class="step-num mb-2">Step 02 · Install the backend</p>
+        <div class="bg-dark-bg text-white rounded-lg p-4 flex items-center justify-between">
+          <code class="code">./setup.sh</code>
+          <button onclick="copyText('./setup.sh', this)" class="copy-btn text-white/60 ml-3" title="Copy">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+        <p class="text-xs text-muted-foreground mt-2">Creates <code class="bg-muted px-1 rounded">backend/venv</code>, installs Python deps. Takes ~3 min on first run (torch is heavy).</p>
+      </li>
+
+      <li>
+        <p class="step-num mb-2">Step 03 · Drop the keys into .env</p>
+        <div class="bg-dark-bg text-white rounded-lg p-4 flex items-center justify-between">
+          <code class="code">cp .env.example .env</code>
+          <button onclick="copyText('cp .env.example .env', this)" class="copy-btn text-white/60 ml-3" title="Copy">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+        <p class="text-xs text-muted-foreground mt-2">
+          Open <code class="bg-muted px-1 rounded">.env</code> in any editor and fill in:
+        </p>
+        <pre class="bg-muted text-foreground rounded-lg p-3 mt-2 text-xs overflow-x-auto"><code>ELEVENLABS_API_KEY=sk_xxxxxxxxxxxxxxxxx
+KIE_API_KEY=xxxxxxxxxxxxxxxxx</code></pre>
+      </li>
+
+      <li>
+        <p class="step-num mb-2">Step 04 · Start both servers</p>
+        <div class="bg-dark-bg text-white rounded-lg p-4 flex items-center justify-between">
+          <code class="code">./start.sh</code>
+          <button onclick="copyText('./start.sh', this)" class="copy-btn text-white/60 ml-3" title="Copy">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+        <p class="text-xs text-muted-foreground mt-2">Backend boots on :8000, frontend on :3000. <kbd class="kbd">Ctrl</kbd> + <kbd class="kbd">C</kbd> stops both.</p>
+      </li>
+
+      <li>
+        <p class="step-num mb-2">Step 05 · Open the studio</p>
+        <a href="http://localhost:3000" class="inline-flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg font-bold text-sm hover:opacity-90">
+          http://localhost:3000 →
+        </a>
+      </li>
+    </ol>
+  </div>
+
+  <!-- Path B -->
+  <div class="bg-card border border-primary/30 rounded-2xl p-8 bg-primary/[0.015]">
+    <div class="flex items-start justify-between mb-6">
+      <div class="accent-bar">
+        <p class="eyebrow text-primary mb-2">Path B · Claude Code (faster)</p>
+        <h3 class="display text-2xl">Let the AI set it up for you</h3>
+      </div>
+      <span class="pill pill-primary">Recommended</span>
+    </div>
+
+    <p class="text-sm text-muted-foreground mb-6 max-w-2xl">
+      Install <a href="https://claude.com/claude-code" target="_blank" class="text-primary underline underline-offset-2">Claude Code</a> if you don't already have it. Then:
+    </p>
+
+    <ol class="space-y-5">
+      <li>
+        <p class="step-num mb-2">Step 01 · Clone the repo and open Claude</p>
+        <div class="bg-dark-bg text-white rounded-lg p-4 flex items-center justify-between">
+          <code class="code">git clone https://github.com/XYconst/anchor-video-translator.git && cd anchor-video-translator && claude</code>
+          <button onclick="copyText('git clone https://github.com/XYconst/anchor-video-translator.git && cd anchor-video-translator && claude', this)" class="copy-btn text-white/60 ml-3" title="Copy">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+      </li>
+
+      <li>
+        <p class="step-num mb-2">Step 02 · Paste this into Claude</p>
+        <div class="bg-muted border border-border rounded-lg p-4 relative">
+          <button onclick="copyText(document.getElementById('claude-prompt').innerText, this)" class="copy-btn absolute top-3 right-3 text-muted-foreground" title="Copy">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+          <p id="claude-prompt" class="text-sm leading-relaxed pr-10">
+            Set up the Anchor Video Translator. Read the README to understand the project, then walk me through getting an ElevenLabs API key and a KIE.ai API key. Once I paste them, write them into a <code>.env</code> file at the project root, run <code>./setup.sh</code> to install the backend, then start both the backend (port 8000) and frontend (port 3000) with <code>./start.sh</code>. Open <code>http://localhost:3000</code> in my browser when ready and tell me what to test first.
+          </p>
+        </div>
+      </li>
+
+      <li>
+        <p class="step-num mb-2">Step 03 · Follow the prompts</p>
+        <p class="text-sm text-muted-foreground">Claude will ask you to paste keys when it needs them, run the setup script, boot the servers, and open the browser. The whole flow takes about 10 minutes.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ──────────────────────────── TROUBLESHOOTING ──────────────────────────── -->
+<section class="bg-muted/40 border-y border-border">
+  <div class="max-w-6xl mx-auto px-6 sm:px-10 py-20">
+    <p class="eyebrow mb-3">04 · When things go sideways</p>
+    <h2 class="display text-3xl sm:text-5xl mb-12 max-w-3xl">
+      Common issues, <span class="italic-muted font-serif italic font-normal">fast answers.</span>
+    </h2>
+
+    <div class="space-y-3">
+      <details class="group bg-card border border-border rounded-xl p-5">
+        <summary class="flex items-center justify-between">
+          <span class="font-bold">setup.sh fails with "python3: command not found"</span>
+          <svg class="summary-arrow w-4 h-4 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="text-sm text-muted-foreground mt-3 leading-relaxed">
+          Python 3.12+ isn't installed. macOS: <code class="bg-muted px-1 rounded">brew install python@3.12</code>. Ubuntu: <code class="bg-muted px-1 rounded">sudo apt install python3.12 python3.12-venv</code>. Then rerun <code class="bg-muted px-1 rounded">./setup.sh</code>.
+        </p>
+      </details>
+
+      <details class="group bg-card border border-border rounded-xl p-5">
+        <summary class="flex items-center justify-between">
+          <span class="font-bold">"ffmpeg not found" during a translation</span>
+          <svg class="summary-arrow w-4 h-4 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="text-sm text-muted-foreground mt-3 leading-relaxed">
+          Install it system-wide. macOS: <code class="bg-muted px-1 rounded">brew install ffmpeg</code>. Ubuntu: <code class="bg-muted px-1 rounded">sudo apt install ffmpeg</code>. Restart the backend afterwards.
+        </p>
+      </details>
+
+      <details class="group bg-card border border-border rounded-xl p-5">
+        <summary class="flex items-center justify-between">
+          <span class="font-bold">Frontend loads but shows "Could not reach the API"</span>
+          <svg class="summary-arrow w-4 h-4 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="text-sm text-muted-foreground mt-3 leading-relaxed">
+          Backend isn't running. In a second terminal: <code class="bg-muted px-1 rounded">cd backend && ./venv/bin/uvicorn main:app --port 8000</code>. Check the log for missing env vars.
+        </p>
+      </details>
+
+      <details class="group bg-card border border-border rounded-xl p-5">
+        <summary class="flex items-center justify-between">
+          <span class="font-bold">"Unsupported file type: audio/x-wav" during translation</span>
+          <svg class="summary-arrow w-4 h-4 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="text-sm text-muted-foreground mt-3 leading-relaxed">
+          Pull the latest from main, that bug shipped a fix. <code class="bg-muted px-1 rounded">git pull origin main && ./setup.sh</code>, restart.
+        </p>
+      </details>
+
+      <details class="group bg-card border border-border rounded-xl p-5">
+        <summary class="flex items-center justify-between">
+          <span class="font-bold">"The read operation timed out"</span>
+          <svg class="summary-arrow w-4 h-4 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="text-sm text-muted-foreground mt-3 leading-relaxed">
+          KIE/Gemini was slow this time. The pipeline retries up to 6 times automatically. If it still fails, your KIE balance might be empty — top up and retry.
+        </p>
+      </details>
+
+      <details class="group bg-card border border-border rounded-xl p-5">
+        <summary class="flex items-center justify-between">
+          <span class="font-bold">Captions look one way in the preview, different in the output</span>
+          <svg class="summary-arrow w-4 h-4 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="text-sm text-muted-foreground mt-3 leading-relaxed">
+          Make sure you're on the latest main — preview is WYSIWYG since the May 14 release. <code class="bg-muted px-1 rounded">git pull origin main</code>, hard refresh the browser.
+        </p>
+      </details>
+
+      <details class="group bg-card border border-border rounded-xl p-5">
+        <summary class="flex items-center justify-between">
+          <span class="font-bold">Container OOMs / your laptop fan screams</span>
+          <svg class="summary-arrow w-4 h-4 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="text-sm text-muted-foreground mt-3 leading-relaxed">
+          Lower concurrent jobs. Edit <code class="bg-muted px-1 rounded">.env</code>: <code class="bg-muted px-1 rounded">MAX_CONCURRENT_JOBS=1</code>. Restart the backend. Default is 3 which assumes 16 GB+ RAM.
+        </p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────────────── FOOTER ──────────────────────────── -->
+<footer class="dark-surface">
+  <div class="max-w-6xl mx-auto px-6 sm:px-10 py-16">
+    <div class="grid sm:grid-cols-2 gap-8 items-end">
+      <div>
+        <p class="eyebrow eyebrow-dark mb-3">Anchor Open Source</p>
+        <h3 class="display text-white text-3xl sm:text-4xl mb-4">
+          Ship it, fork it, <span class="italic-muted italic-muted-dark font-serif italic">tell us about it.</span>
+        </h3>
+        <p class="text-white/70 text-sm leading-relaxed max-w-md">
+          If you build something cool with this, email <a href="mailto:hello@anchormedia.io" class="text-white underline">hello@anchormedia.io</a>. PRs welcome at the repo.
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center gap-3 sm:justify-end">
+        <a href="https://github.com/XYconst/anchor-video-translator" class="inline-flex items-center gap-2 bg-white text-foreground px-5 py-3 rounded-lg font-bold text-sm hover:opacity-90">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.6 0-12 5.4-12 12 0 5.3 3.4 9.8 8.2 11.4.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.9 1.3 1.9 1.3 1.1 1.9 2.9 1.3 3.6 1 .1-.8.4-1.4.8-1.7-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.3-3.3-.1-.3-.6-1.6.1-3.3 0 0 1-.3 3.3 1.3 1-.3 2-.4 3-.4s2 .1 3 .4c2.3-1.6 3.3-1.3 3.3-1.3.7 1.7.2 3 .1 3.3.8.9 1.3 2 1.3 3.3 0 4.7-2.9 5.7-5.6 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.8-1.6 8.2-6.1 8.2-11.4 0-6.6-5.4-12-12-12z"/></svg>
+          View on GitHub
+        </a>
+        <a href="https://github.com/XYconst/anchor-video-translator/archive/refs/heads/main.zip" class="inline-flex items-center gap-2 bg-primary text-white px-5 py-3 rounded-lg font-bold text-sm hover:opacity-90">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          Download ZIP
+        </a>
+      </div>
+    </div>
+
+    <div class="mt-12 pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <p class="eyebrow eyebrow-dark">© Anchor Media · MIT licensed · 2026</p>
+      <p class="text-white/45 font-mono">v1.0 · Open source</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    setTimeout(() => btn.classList.remove('copied'), 1200);
+  });
+}
+</script>
+
+</body>
+</html>
